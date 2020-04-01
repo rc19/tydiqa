@@ -1,8 +1,19 @@
 # TyDi QA: A Benchmark for Information-Seeking Question Answering in Typologically Diverse Languages
 
+[**Tasks**](#the-tasks) | [**Download**](#download-the-dataset) |
+[**Baselines**](#building-a-baseline-system) | [**Evaluation**](#evaluation) |
+[**Leaderboard**](#leaderboard-submissions) |
+[**Website/Glosses**](https://ai.google.com/research/tydiqa) |
+[**Paper**](https://storage.googleapis.com/tydiqa/tydiqa.pdf) |
+[**Slides**](https://storage.googleapis.com/tydiqa/tydiqa_slides_stanford.pdf) |
+[**Changelog**](CHANGELOG.md)
+
 This repository contains information about TyDi QA, code for evaluating results
 on the dataset, implementations of baseline systems for the dataset, and some
 advice for working with the dataset.
+
+Want to keep up to date on updates and new releases? Join our low-traffic
+[announcement email list](https://groups.google.com/forum/#!forum/tydiqa-announce).
 
 # Introduction
 
@@ -19,11 +30,11 @@ language without the use of translation (unlike MLQA and XQuAD).
 
 To see some examples from the dataset with linguistic glosses or for information
 on TyDi QA's leaderboard, see the
-[website](https://google-research-datasets.github.io/tydiqa).
+[website](https://ai.google.com/research/tydiqa).
 
 For a full description of the dataset, how it was collected, and the quality
 measurements for the baseline system, see the
-[TACL article](https://storage.cloud.google.com/tydiqa/tydiqa.pdf).
+[TACL article](https://storage.googleapis.com/tydiqa/tydiqa.pdf).
 
 # The Tasks
 
@@ -75,21 +86,16 @@ the following URLs.
 
 For the primary tasks:
 
-```
-wget https://storage.cloud.google.com/tydiqa/v1.0/tydiqa-v1.0-dev.jsonl.gz
-wget https://storage.cloud.google.com/tydiqa/v1.0/tydiqa-v1.0-train.jsonl.gz
-```
+*   [https://storage.googleapis.com/tydiqa/v1.0/tydiqa-v1.0-dev.jsonl.gz](https://storage.googleapis.com/tydiqa/v1.0/tydiqa-v1.0-dev.jsonl.gz)
+*   [https://storage.googleapis.com/tydiqa/v1.0/tydiqa-v1.0-train.jsonl.gz](https://storage.googleapis.com/tydiqa/v1.0/tydiqa-v1.0-train.jsonl.gz)
 
 The primary task training set is about 1.6GB while the dev set is about 150MB.
 
 For the gold passage task:
 
-```
-wget https://storage.cloud.google.com/tydiqa/v1.0/tydiqa-goldp-v1.0-dev.json
-wget https://storage.cloud.google.com/tydiqa/v1.0/tydiqa-goldp-v1.0-train.json
-wget https://storage.cloud.google.com/tydiqa/v1.0/tydiqa-goldp-v1.0-dev.tgz
-tar -xvzf tydiqa-goldp-v1.0-dev.tgz
-```
+*   [https://storage.googleapis.com/tydiqa/v1.1/tydiqa-goldp-v1.1-dev.json](https://storage.googleapis.com/tydiqa/v1.1/tydiqa-goldp-v1.1-dev.json)
+*   [https://storage.googleapis.com/tydiqa/v1.1/tydiqa-goldp-v1.1-train.json](https://storage.googleapis.com/tydiqa/v1.1/tydiqa-goldp-v1.1-train.json)
+*   [https://storage.googleapis.com/tydiqa/v1.1/tydiqa-goldp-v1.1-dev.tgz](https://storage.googleapis.com/tydiqa/v1.1/tydiqa-goldp-v1.1-dev.tgz)
 
 The gold passage training set is about 50MB and the dev set is about 10MB. The
 extra tarball for the dev set contains JSON files that are split along language
@@ -101,10 +107,9 @@ makes it easier to run inference on the entire dev set in a single invocation.
 ## Primary Tasks (TyDiQA-SelectP and TyDiQA-MinSpan)
 
 We provide a baseline system based on multilingual BERT in this repo. Please see
-[baseline/README.md](baseline/README.md)
-for details on running and modifying that system. You may
-also find this code useful even if you plan to build a system from scratch as it
-is designed to be easily re-used.
+[baseline/README.md](baseline) for details on running and modifying that system.
+You may also find this code useful even if you plan to build a system from
+scratch as it is designed to be easily re-used.
 
 ## Gold Passage Task (TyDiQA-GoldP)
 
@@ -113,7 +118,7 @@ SQuAD 1.1 setting, it can generally be swapped into any code that accepts SQuAD
 1.1 JSON inputs by simply changing a few file paths in your code. We provide an
 example of doing exactly this with the original/unmodified multilingual BERT
 reference implementation. See
-[gold_passage_baseline/README.md](gold_passage_baseline/README.md) for details.
+[gold_passage_baseline/README.md](gold_passage_baseline) for details.
 
 # Evaluation
 
@@ -123,8 +128,8 @@ The predictions can be evaluated using a command like the following:
 
 ```
 python3 tydi_eval.py \
-  --gold_path=small_gold_annotation.jsonl \
-  --predictions_path=sample_prediction.json
+  --gold_path=tydiqa-v1.0-dev.jsonl.gz \
+  --predictions_path=your_model_predictions.jsonl
 ```
 
 This script computes language-wise F1 scores and then averages over languages,
@@ -145,7 +150,7 @@ evaluation is in
 ```
 cd gold_passage_baseline
 vim eval_gold_passage_baseline.sh  # Edit path to `TYDIQA_GOLDP_DIR`
-./eval_gold_passage_baseline.sh predictions.json /tmp
+./eval_gold_passage_baseline.sh predictions.jsonl /tmp
 ```
 
 Note that for dev and test evaluation, each language is evaluated separately and
@@ -155,9 +160,8 @@ the overall score is the average over languages, excluding English.
 
 In addition to reporting results on the dev set in your own research articles,
 we also encourage you to submit to our
-[public leaderboard](https://google-research-datasets.github.io/tydiqa),
-to create a record of
-your experiments. We believe leaderboard submissions serve two main purposes:
+[public leaderboard](https://ai.google.com/research/tydiqa), to create a record
+of your experiments. We believe leaderboard submissions serve two main purposes:
 
 (a) to create an existence proof that such a result is **possible** under
 carefully isolated conditions (i.e. cheating, intentional or accidental is
@@ -182,7 +186,13 @@ it will be possible to reproduce and build on your result. These include:
     the community does not know the details of the underlying model and data it
     was built on.)
 
-For step-by-step instructions on submitting, see [leaderboard.md](leaderboard.md).
+For step-by-step instructions on submitting, see
+[leaderboard.md](leaderboard.md).
+
+In addition to submitting to the leaderboard we encourage you to make both your
+source code and your Docker images public so that others can easily run
+inference with your system. This opens up the possibility of others (such as
+MT-focused researchers) building on top of (and citing!) your QA system.
 
 # Analyze Your Results
 
@@ -192,9 +202,29 @@ linguists and/or native speakers of these languages to create glosses that
 explain how your model is interacting with language. See the TACL article for
 examples of glossed examples with explanations (Figures 2 - 7).
 
+# Source Data
+
+The articles for TyDi QA are drawn from single coherent snapshots of Wikipedia
+from the Internet Archive to enable open-retrieval experiments. You can download
+the original article data in Wikitext format from the following URLS:
+
+*   https://archive.org/download/arwiki-20190201/arwiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/bnwiki-20190201/bnwiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/enwiki-20190201/enwiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/fiwiki-20190201/fiwiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/idwiki-20190201/idwiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/jawiki-20190201/jawiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/kowiki-20190201/kowiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/ruwiki-20190201/ruwiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/tewiki-20190201/tewiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/tlwiki-20190201/tlwiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/swwiki-20190201/swwiki-20190201-pages-articles-multistream.xml.bz2
+*   https://archive.org/download/thwiki-20190101/thwiki-20190101-pages-articles-multistream.xml.bz2
+
 # Citation
 
-Please cite TyDi QA as:
+Please cite the
+[TyDi QA TACL article](https://storage.googleapis.com/tydiqa/tydiqa.pdf) as:
 
 ```
 @article{tydiqa,
